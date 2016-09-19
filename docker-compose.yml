@@ -1,0 +1,42 @@
+version: "2"
+services:
+        telegraf:
+                image: telegraf:1.0.0
+                depends_on:
+                        - influxdb
+                ports:
+                        - "8094:8094"
+                volumes:
+                        - ./telegraf/telegraf.conf:/etc/telegraf/telegraf.conf:ro
+                command: telegraf
+        influxdb:
+                image: influxdb:1.0.0
+                ports:
+                        - "8083:8083"
+                        - "8086:8086"
+                expose:
+                        - "8086"
+                volumes:
+                        - ./influxdb/influxdb.conf:/etc/influxdb/influxdb.conf:ro
+                command: influxd run -config /etc/influxdb/influxdb.conf
+        chronograf:
+                image: chronograf:1.0.0-rc1
+                depends_on:
+                        - influxdb
+                ports:
+                        - "10000:10000"
+                volumes:
+                        - ./chronograf/config.toml:/opt/chronograf/config.toml:ro
+                command: chronograf -config /opt/chronograf/config.toml
+        kapacitor:
+                image: kapacitor:1.0.0
+                depends_on:
+                        - influxdb
+                ports:
+                        - "9092:9092"
+                expose:
+                        - "9092"
+                volumes:
+                        - ./kapacitor/kapacitor.conf:/etc/kapacitor/kapacitor.conf:ro
+                        - ./kapacitor/alert.tick:/alert.tick:ro
+                command: kapacitord -config /etc/kapacitor/kapacitor.conf -log-file /kap.log -log-level info

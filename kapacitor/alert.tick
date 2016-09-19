@@ -1,0 +1,6 @@
+stream
+	|from()
+		.measurement('learning')
+	|alert()
+		.crit(lambda: "headache" > 1)
+		.log('/tmp/alerts.log')
