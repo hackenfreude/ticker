@@ -8,7 +8,7 @@ services:
                         - "8094:8094"
                 volumes:
                         - ./telegraf/telegraf.conf:/etc/telegraf/telegraf.conf:ro
-                command: telegraf
+                command: telegraf -config /etc/telegraf/telegraf.conf
         influxdb:
                 image: influxdb:1.0.0
                 ports:
@@ -39,4 +39,4 @@ services:
                 volumes:
                         - ./kapacitor/kapacitor.conf:/etc/kapacitor/kapacitor.conf:ro
                         - ./kapacitor/alert.tick:/alert.tick:ro
-                command: kapacitord -config /etc/kapacitor/kapacitor.conf -log-file /kap.log -log-level info
+                command: kapacitord -config /etc/kapacitor/kapacitor.conf
